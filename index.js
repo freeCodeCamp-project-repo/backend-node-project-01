@@ -20,34 +20,27 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
 // your first API endpoint... 
-app.get("/api/:unix", function (req, res) {
-  const { unix } = req.params;
+app.get("/api/hello", function (req, res) {
+  res.json({ greeting: 'hello API' });
+});
 
-  if (!unix) {
-    const currentDateUnix = Date.now();
-    const currentDate = new Date(currentDateUnix);
-    console.log("file: index.js:31 ~ currentDate:", currentDate)
-    return res.json({ unix: Number(unix), utc: currentDate.toUTCString() });
-  }
-
-  if (!isNaN(unix)) {
-    const miliseconds = Number(unix) * 1000;
-    const date = new Date(miliseconds);
-    if (!isNaN(date?.getTime())) {
-      return res.json({ unix: Number(unix), utc: date.toUTCString() });
-    };
-  }
-
-  const checkDateValidation = new Date(unix);
-  if (!isNaN(checkDateValidation?.getTime())) {
-    return res.json({ unix: Number(unix), utc: checkDateValidation.toUTCString() });
-  }
-
-  return res.json({ error: "invalid Date" })
-
+app.get('/api', function (req, res) {
+  const now = new Date();
+  res.json({ unix: now.getTime(), utc: now.toUTCString() })
 })
+
+app.get("/api/:date", (req, res) => {
+  const paramsDate = req.params.date;
+  const invalidDate = "Invalid Date";
+  const date = parseInt(paramsDate) < 10000
+    ? new Date(paramsDate)
+    : new Date(parseInt(paramsDate))
+
+  date.toString() === invalidDate
+    ? res.json({ error: invalidDate })
+    : res.json({ unix: date.valueOf(), utc: date.toUTCString() });
+});
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
