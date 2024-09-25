@@ -29,20 +29,20 @@ app.get("/api/:unix", function (req, res) {
     const currentDateUnix = Date.now();
     const currentDate = new Date(currentDateUnix);
     console.log("file: index.js:31 ~ currentDate:", currentDate)
-    return res.json({ unix: currentDateUnix, utc: currentDate.toUTCString() });
+    return res.json({ unix: Number(unix), utc: currentDate.toUTCString() });
   }
 
   if (!isNaN(unix)) {
     const miliseconds = Number(unix) * 1000;
     const date = new Date(miliseconds);
     if (!isNaN(date?.getTime())) {
-      return res.json({ unix: unix, utc: date.toUTCString() });
+      return res.json({ unix: Number(unix), utc: date.toUTCString() });
     };
   }
 
   const checkDateValidation = new Date(unix);
   if (!isNaN(checkDateValidation?.getTime())) {
-    return res.json({ unix: unix, utc: checkDateValidation.toUTCString() });
+    return res.json({ unix: Number(unix), utc: checkDateValidation.toUTCString() });
   }
 
   return res.json({ error: "invalid Date" })
